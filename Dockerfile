@@ -1,10 +1,27 @@
-FROM node:20.10.0-alpine
+FROM node:20
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-WORKDIR /home/node/app
+
+WORKDIR /usr/src/app
+
+
 COPY package*.json ./
-USER node
+
+
 RUN npm install
-COPY --chown=node:node . .
+
+
+COPY index.js .
+COPY newcontroller.js .
+
+
+COPY tmp/data /usr/src/app/tmp/data
+
+
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+
+
+ENV NODE_OPTIONS="--max-old-space-size=1500"
+ENV CPU_LIMIT="2"
+
+
+CMD ["node", "index.js"]
